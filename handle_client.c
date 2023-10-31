@@ -25,10 +25,7 @@ static void call_route(regmatch_t *route_matches, char *url, __Route *route, int
 
 		while (current != NULL) {
 			int res_ = current->fn(req, &res);
-
-			for (int i = 0; i < RES_TO_FREE_SIZE; i++)
-				if (res.to_free[i] != NULL)
-					free(res.to_free[i]);
+			httpserver_response_free(&res);
 
 			if (res_ != 0) {
 				allowed = 0;
@@ -56,12 +53,8 @@ static void call_route(regmatch_t *route_matches, char *url, __Route *route, int
 	send(client_fd, buffer, strlen(buffer), 0);
 
 	// free used memory
-	for (int i = 0; i < req.params_len; i++)
-		if (req.params[i] != NULL)
-			free(req.params[i]);
-	for (int i = 0; i < RES_TO_FREE_SIZE; i++)
-		if (res.to_free[i] != NULL)
-			free(res.to_free[i]);
+	httpserver_request_free(&req);
+	httpserver_response_free(&res);
 }
 
 void *handle_client(__ClientHandlerArgs *args) {

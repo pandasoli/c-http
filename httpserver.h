@@ -83,6 +83,8 @@ int httpserver_listen(HTTPServer *server);
  * Free server properties
  */
 void httpserver_free(HTTPServer *server);
+void httpserver_request_free(HTTPRequest *req);
+void httpserver_response_free(HTTPResponse *req);
 
 /**
  * Create route

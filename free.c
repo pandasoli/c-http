@@ -24,3 +24,18 @@ void httpserver_free(HTTPServer *server) {
 		route = next;
 	}
 }
+
+void httpserver_request_free(HTTPRequest *req) {
+	free(req->content_type);
+
+	for (int i = 0; i < req->params_len; i++)
+		if (req->params[i] != NULL)
+			free(req->params[i]);
+	free(req->params);
+}
+
+void httpserver_response_free(HTTPResponse *res) {
+	for (int i = 0; i < RES_TO_FREE_SIZE; i++)
+		if (res->to_free[i] != NULL)
+			free(res->to_free[i]);
+}
