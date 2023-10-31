@@ -1,3 +1,5 @@
+Note: project made only to support another one of my projects, this project may not be developed more.
+
 
 **Compile**
 ```bash
