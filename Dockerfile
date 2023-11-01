@@ -1,9 +1,9 @@
 FROM alpine:latest
 
-RUN apk update
-RUN apk add --no-cache apk-tools coreutils
-RUN apk add --no-cache gcc libc-dev build-base
+RUN apk update && \
+	apk add --no-cache apk-tools coreutils gcc libc-dev build-base
 
+WORKDIR /app
 COPY . .
 
 RUN make
