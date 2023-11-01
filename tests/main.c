@@ -3,7 +3,7 @@
 #include <string.h>
 #include "httpserver.h"
 
-#define PORT 8080
+#define PORT 80
 
 void home(HTTPRequest req, HTTPResponse *res) {
 	printf("Hello from <home>\n");
