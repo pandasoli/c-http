@@ -2,27 +2,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <signal.h>
 #include "httpserver.h"
-
-static HTTPServer *gl_server;
-
-void handleSIGINT(int signal) {
-	httpserver_free(gl_server);
-	close(gl_server->fd);
-
-	exit(0);
-}
 
 
 int httpserver_listen(HTTPServer *server) {
-	gl_server = server;
-
-	if (signal(SIGINT, handleSIGINT) == SIG_ERR) {
-		perror("register signal handler SIGINT failed");
-		return 1;
-	}
-
 	// bind socket to port
 	if (bind(server->fd, (struct sockaddr *) &server->addr, sizeof(server->addr)) < 0) {
 		perror("bind failed");

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../httpserver.h"
+#include "httpserver.h"
 
 #define PORT 8080
 
