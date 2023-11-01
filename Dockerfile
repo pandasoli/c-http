@@ -7,4 +7,4 @@ COPY . .
 RUN make
 EXPOSE 8080
 
-ENTRYPOINT ["./main"]
+ENTRYPOINT ["./bin/main"]
