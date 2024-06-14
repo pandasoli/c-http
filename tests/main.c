@@ -7,7 +7,7 @@
 
 void home(HTTPRequest req, HTTPResponse *res) {
 	printf("Hello from <home>\n");
-	printf("Content - %s: \"%s\"\n", req.content_type, req.content);
+	printf("Content - %s: \"%s\"\n", req.content_type ? req.content_type : "undefined", req.content);
 
 	for (int i = 0; i < req.params_len; i++)
 		printf("%d - \"%s\"\n", i, req.params[i]);
@@ -19,7 +19,7 @@ int main(void) {
 
 	httpserver_route(
 		&server,
-		POST,
+		GET,
 		"^/$",
 		&home,
 		NULL

@@ -40,6 +40,8 @@ HTTPRequest make_request(char *buffer, char *url, regmatch_t *route_matches) {
 			strncpy(req.content_type, val_start, val_len);
 			req.content_type[val_len] = 0;
 		}
+		else
+			req.content_type = NULL;
 	}
 
 	// process content
