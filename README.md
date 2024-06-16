@@ -3,7 +3,7 @@ Note: project made only to support another one of my projects, this project may 
 
 **Compile**
 ```bash
-gcc -g -o main *.c test/*.c
+gcc -ggdb -o main tests/main.c *.c
 ```
 
 **Fetch**
