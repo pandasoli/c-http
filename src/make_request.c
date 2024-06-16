@@ -32,10 +32,11 @@ HTTPRequest make_request(char *buffer, char *url, regmatch_t *route_matches) {
 	{
 		char *key = "Content-Type: ";
 		char *key_start = strstr(buffer, key);
-		char *val_start = key_start + strlen(key);
-		size_t val_len = strcspn(val_start, "\r\n");
 
 		if (key_start != NULL) {
+			char *val_start = key_start + strlen(key);
+			size_t val_len = strcspn(val_start, "\r\n");
+
 			req.content_type = malloc(val_len + 1);
 			strncpy(req.content_type, val_start, val_len);
 			req.content_type[val_len] = 0;
