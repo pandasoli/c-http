@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "httpserver.h"
+#include "hashtable.h"
 
 
 HTTPRequest make_request(char *buffer, char *url, regmatch_t *route_matches) {
@@ -28,21 +30,28 @@ HTTPRequest make_request(char *buffer, char *url, regmatch_t *route_matches) {
 		req.params[i] = param;
 	}
 
-	// process content type
-	{
-		char *key = "Content-Type: ";
-		char *key_start = strstr(buffer, key);
+	// process headers
+	req.headers = hashtable_create(10, &djb2);
 
-		if (key_start != NULL) {
-			char *val_start = key_start + strlen(key);
-			size_t val_len = strcspn(val_start, "\r\n");
+	char *last_header = buffer;
 
-			req.content_type = malloc(val_len + 1);
-			strncpy(req.content_type, val_start, val_len);
-			req.content_type[val_len] = 0;
-		}
-		else
-			req.content_type = NULL;
+	while (1) {
+		char *key = strstr(last_header, "\r\n") + 2 /* skip \r\n */;
+
+		if (strncmp(key, "\r\n", 2) == 0)
+			break;
+
+		int key_len = strcspn(key, ":");
+
+		char *val_start = strstr(key, ": ") + 2 /* skip ": " */;
+		int val_len = strcspn(val_start, "\r\n");
+		last_header = val_start + val_len;
+
+		char *nval = malloc(val_len);
+		strncpy(nval, val_start, val_len);
+		nval[val_len] = 0;
+
+		req.headers.insert(&req.headers, key, key_len, nval);
 	}
 
 	// process content

@@ -7,7 +7,19 @@
 
 void home(HTTPRequest req, HTTPResponse *res) {
 	printf("Hello from <home>\n");
-	printf("Content - %s: \"%s\"\n", req.content_type ? req.content_type : "undefined", req.content);
+
+	puts("Headers: ");
+
+	for (int i = 0; i < req.headers.size; ++i) {
+		if (req.headers.elements[i] == NULL) continue;
+
+		entry *e = req.headers.elements[i];
+		while (e != NULL) {
+			printf("  \"%s\": \"%s\"\n", e->key, (char *) e->val);
+			e = e->next;
+		}
+	}
+	/*printf("Content - %s: \"%s\"\n", req.content_type ? req.content_type : "(nil)", req.content);*/
 
 	for (int i = 0; i < req.params_len; i++)
 		printf("%d - \"%s\"\n", i, req.params[i]);

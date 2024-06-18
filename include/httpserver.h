@@ -2,6 +2,7 @@
 
 #include <netinet/in.h>
 #include <regex.h>
+#include "./hashtable.h"
 
 #define GET 0
 #define POST 1
@@ -13,56 +14,62 @@
 #define REQ_MAX_PARAMS 10
 
 
-typedef struct {
+typedef struct HTTPResponse HTTPResponse;
+struct HTTPResponse {
 	int status;
 	char *status_msg;
 	char *body;
 	char *mime_type;
 	void *to_free[RES_TO_FREE_SIZE];
-} HTTPResponse;
+};
 
-typedef struct {
+typedef struct HTTPRequest HTTPRequest;
+struct HTTPRequest {
 	char **params;
 	size_t params_len;
 
 	char *content;
-	char *content_type;
+	hashtable headers;
 
 	/**
 	 * This field is used by the application to transmit data from middlewares to routes.
 	 */
 	void *data;
-} HTTPRequest;
+};
 
 typedef void (*__RouteFn)(HTTPRequest req, HTTPResponse *res);
 typedef int (*__MiddlewareFn)(HTTPRequest req, HTTPResponse *res);
 
-typedef struct __Middleware {
+typedef struct __Middleware __Middleware;
+struct __Middleware {
 	__MiddlewareFn fn;
-	struct __Middleware *next;
-} __Middleware;
+	__Middleware *next;
+};
 
-typedef struct __Route {
+typedef struct __Route __Route;
+struct __Route {
 	int method;
 	regex_t path;
 	__RouteFn fn;
 	__Middleware *middlewares;
 
-	struct __Route *next;
-} __Route;
+	__Route *next;
+};
 
-typedef struct {
+typedef struct __ClientHandlerArgs __ClientHandlerArgs;
+struct __ClientHandlerArgs {
 	int client_fd;
 	__Route *routes;
-} __ClientHandlerArgs;
+};
 
-typedef struct {
+typedef struct HTTPServer HTTPServer;
+struct HTTPServer {
 	int fd;
 	struct sockaddr_in addr;
 
 	int port;
 	__Route *routes;
-} HTTPServer;
+};
 
 /**
  * Initialize server properties

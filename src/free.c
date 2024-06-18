@@ -26,7 +26,15 @@ void httpserver_free(HTTPServer *server) {
 }
 
 void httpserver_request_free(HTTPRequest *req) {
-	if (req->content_type) free(req->content_type);
+	for (int i = 0; i < req->headers.size; ++i) {
+		entry *e = req->headers.elements[i];
+
+		while (e != NULL) {
+			free((void *) e->val);
+			e = e->next;
+		}
+	}
+	req->headers.free(req->headers);
 
 	for (int i = 0; i < req->params_len; i++)
 		if (req->params[i] != NULL)
